@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "GameDominarium.sln"
+    "dotnet.defaultSolution": "Jeu.sln"
 }
