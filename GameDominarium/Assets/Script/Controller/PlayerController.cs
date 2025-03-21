@@ -251,18 +251,4 @@ public class PlayerController : MonoBehaviour
             _isGrounded = false;
         }
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (_spriteRend == null) return;
-
-        Bounds bounds = _spriteRend.bounds;
-        Vector2 checkBoxSize = new Vector2(distanceDW, bounds.size.y * 0.9f);
-        Vector2 checkBoxPositionRight = new Vector2(bounds.max.x + checkBoxSize.x / 2, bounds.center.y);
-        Vector2 checkBoxPositionLeft = new Vector2(bounds.min.x - checkBoxSize.x / 2, bounds.center.y);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(checkBoxPositionRight, checkBoxSize);
-        Gizmos.DrawWireCube(checkBoxPositionLeft, checkBoxSize);
-    }
 }

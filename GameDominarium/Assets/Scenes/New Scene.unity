@@ -146,8 +146,8 @@ Transform:
   m_GameObject: {fileID: 461082110}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 23.4, y: -0.6, z: 0.014116665}
-  m_LocalScale: {x: 3.2, y: 15.12, z: 0.7020767}
+  m_LocalPosition: {x: 23.1214, y: -0.6, z: 0.014116665}
+  m_LocalScale: {x: 3.7571201, y: 15.12, z: 0.7020767}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 504012944}
@@ -739,7 +739,7 @@ MonoBehaviour:
   _maxWallJumpHorizontalForce: 5
   _minWallJumpVerticalForce: 4
   _maxWallJumpVerticalForce: 20
-  _wallSlideSpeed: 2
+  _wallSlideSpeed: 4
   _wallStickTime: 0.1
   _infiniteWallJumps: 1
   _maxWallJumps: 3
@@ -775,7 +775,6 @@ MonoBehaviour:
   cubePrefab: {fileID: 1764649693544182492, guid: c60f5cf539c7d0e48a6369bc256bc8b3, type: 3}
   spawnRate: 1.5
   screenWidthPercentage: 0.8
-  fallSpeed: 60
   cubeLifeTime: 10
 --- !u!4 &1900739320
 Transform:
