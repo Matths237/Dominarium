@@ -36,6 +36,10 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded;
     private bool _isWallJumping;
 
+    [Header("COLOR")]
+    [SerializeField] private Color _sprintColor = Color.red;  // Couleur lors du sprint
+    [SerializeField] private Color _normalColor = Color.white; // Couleur normale
+
     private Rigidbody2D _myRgbd2D;
     private SpriteRenderer _spriteRend;
 
@@ -43,6 +47,9 @@ public class PlayerController : MonoBehaviour
     {
         _myRgbd2D = GetComponent<Rigidbody2D>();
         _spriteRend = GetComponent<SpriteRenderer>();
+
+        // Assurez-vous que la couleur de départ est la couleur normale.
+        _spriteRend.color = _normalColor;
     }
 
     void Update()
@@ -132,6 +139,16 @@ public class PlayerController : MonoBehaviour
         }
 
         _myRgbd2D.linearVelocity = new Vector2(newSpeed, _myRgbd2D.linearVelocity.y);
+
+        // Gérer le changement de couleur lors du sprint
+        if (isRunning)
+        {
+            _spriteRend.color = _sprintColor;
+        }
+        else
+        {
+            _spriteRend.color = _normalColor;
+        }
     }
 
     void StartJump()
@@ -196,7 +213,7 @@ public class PlayerController : MonoBehaviour
         _timeToStopStick = _wallStickTime;
         _currentWallJumps++;
 
-        _jumpStartTime = Time.time; 
+        _jumpStartTime = Time.time;
         _isWallJumping = true;
 
         float horizontalForce = _wallDirection * _minWallJumpHorizontalForce;
@@ -204,7 +221,7 @@ public class PlayerController : MonoBehaviour
         _myRgbd2D.linearVelocity = new Vector2(horizontalForce, verticalForce);
         _currentJump++;
         _hasJumpedSinceGrounded = true;
-        EndJump(); 
+        EndJump();
     }
 
 
