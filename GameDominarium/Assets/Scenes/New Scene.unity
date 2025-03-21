@@ -151,6 +151,7 @@ Transform:
   - {fileID: 1706112453}
   - {fileID: 1577530446}
   - {fileID: 519420032}
+  - {fileID: 732080694}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
@@ -314,13 +315,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732080693}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 13.748872, y: 2.9479144, z: -0.2749709}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1900739320}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 504012944}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1577530445
 GameObject:
@@ -485,7 +486,7 @@ Transform:
   m_GameObject: {fileID: 1706112452}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.72, y: 1.24, z: 0.014116665}
+  m_LocalPosition: {x: 6.71, y: 1.01, z: 0.014116665}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -536,7 +537,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.8687682, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -623,7 +624,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedMove: 8
   _runSpeedMultiplier: 1.5
-  _runKey: 44
+  _runKey: 109
   _minForceJump: 12
   _maxForceJump: 17
   _jumpHoldTime: 0.2
@@ -642,6 +643,11 @@ MonoBehaviour:
   _maxWallJumps: 3
   _sprintColor: {r: 1, g: 0, b: 0, a: 1}
   _normalColor: {r: 1, g: 1, b: 1, a: 1}
+  _dashColor: {r: 0, g: 0, b: 1, a: 1}
+  _dashSpeed: 20
+  _dashDuration: 0.2
+  _dashCooldown: 1
+  _dashKey: 44
 --- !u!1 &1900739318
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,9 +678,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cubePrefabs:
-  - cubePrefab: {fileID: 1764649693544182492, guid: c60f5cf539c7d0e48a6369bc256bc8b3, type: 3}
+  - cubePrefab: {fileID: 86477832720164483, guid: c60f5cf539c7d0e48a6369bc256bc8b3, type: 3}
     probability: 0.8
-  - cubePrefab: {fileID: 1764649693544182492, guid: 0a4feb7d29d29984abe45e0676fcd2ca, type: 3}
+  - cubePrefab: {fileID: 86477832720164483, guid: 24c8550ac4e4ade4eab2e6aeaa1dccb2, type: 3}
     probability: 0.2
   spawnRate: 2
   screenWidthPercentage: 0.8
@@ -700,4 +706,3 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 504012944}
-  - {fileID: 732080694}
