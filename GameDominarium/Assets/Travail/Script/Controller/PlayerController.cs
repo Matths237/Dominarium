@@ -3,28 +3,32 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("MOVE")]
-    [SerializeField] private float _speedMove = 6;
+    [SerializeField] private float _speedMove = 8;
     [SerializeField] private float _runSpeedMultiplier = 1.5f;
     [SerializeField] private KeyCode _runKey = KeyCode.LeftShift;
 
+
+
     [Header("JUMP")]
-    [SerializeField] private float _minForceJump = 8;
-    [SerializeField] private float _maxForceJump = 15;
+    [SerializeField] private float _minForceJump = 12;
+    [SerializeField] private float _maxForceJump = 14;
     [SerializeField] private float _jumpHoldTime = 0.2f;
-    [SerializeField] private int _limitJump = 2;
+    [SerializeField] private int _limitJump = 1;
     private int _currentJump;
     private bool _hasJumpedSinceGrounded = false;
     private float _jumpStartTime;
     private bool _isJumping;
 
+
+
     [Header("WALL")]
     [SerializeField] private LayerMask _detectWall;
-    [SerializeField] private float distanceDW = 0.6f;
+    [SerializeField] private float distanceDW = 0f;
     [SerializeField] private float _minWallJumpHorizontalForce = 5f;
-    [SerializeField] private float _maxWallJumpHorizontalForce = 12f;
-    [SerializeField] private float _minWallJumpVerticalForce = 8f;
-    [SerializeField] private float _maxWallJumpVerticalForce = 15f;
-    [SerializeField] private float _wallSlideSpeed = 2f;
+    [SerializeField] private float _maxWallJumpHorizontalForce = 5f;
+    [SerializeField] private float _minWallJumpVerticalForce = 4f;
+    [SerializeField] private float _maxWallJumpVerticalForce = 20f;
+    [SerializeField] private float _wallSlideSpeed = 4f;
     [SerializeField] private float _wallStickTime = 0.1f;
     [SerializeField] private bool _infiniteWallJumps = true;
     [SerializeField] private int _maxWallJumps = 3;
@@ -36,34 +40,39 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded;
     private bool _isWallJumping;
 
-    [Header("COLOR")]
-    [SerializeField] private Color _sprintColor = Color.red;  // Couleur lors du sprint
-    [SerializeField] private Color _normalColor = Color.white; // Couleur normale
-    [SerializeField] private Color _dashColor = Color.blue;  // Couleur lors du dash
+
 
     [Header("DASH")]
-    [SerializeField] private float _dashSpeed = 20f;
+    [SerializeField] private float _dashSpeed = 17f;
     [SerializeField] private float _dashDuration = 0.2f;
     [SerializeField] private float _dashCooldown = 1f;
-    [SerializeField] private KeyCode _dashKey = KeyCode.LeftControl; // Nouvelle variable pour la touche de dash
+    [SerializeField] private KeyCode _dashKey = KeyCode.LeftControl;
     private float _dashTimer;
     private float _dashCooldownTimer;
     private bool _isDashing;
     private Vector2 _dashDirection;
-    private Color _initialColor; // Stocke la couleur de départ
+    private Color _initialColor;
 
     private Rigidbody2D _myRgbd2D;
     private SpriteRenderer _spriteRend;
     private bool _isSprinting;
+
+
+
+    [Header("COLOR")]
+    [SerializeField] private Color _sprintColor = Color.red; 
+    [SerializeField] private Color _normalColor = Color.white; 
+    [SerializeField] private Color _dashColor = Color.blue;  
+
+
 
     void Awake()
     {
         _myRgbd2D = GetComponent<Rigidbody2D>();
         _spriteRend = GetComponent<SpriteRenderer>();
 
-        // Assurez-vous que la couleur de départ est la couleur normale.
         _spriteRend.color = _normalColor;
-        _initialColor = _normalColor; // Stocker la couleur de départ
+        _initialColor = _normalColor; 
     }
 
     void Update()
@@ -94,7 +103,6 @@ public class PlayerController : MonoBehaviour
             _dashCooldownTimer -= Time.deltaTime;
         }
 
-        // Maintient la couleur du dash si on est en train de dasher
         if (_isDashing)
         {
             _spriteRend.color = _dashColor;
@@ -140,21 +148,20 @@ public class PlayerController : MonoBehaviour
             newSpeed *= 0.7f;
         }
 
-        if (!_isDashing) // Ne pas affecter le mouvement pendant le dash
+        if (!_isDashing) 
         {
             _myRgbd2D.linearVelocity = new Vector2(newSpeed, _myRgbd2D.linearVelocity.y);
         }
 
-        // Gérer le changement de couleur lors du sprint
         if (_isSprinting)
         {
             _spriteRend.color = _sprintColor;
-            _initialColor = _sprintColor;  // Mettre à jour _initialColor si le joueur sprint
+            _initialColor = _sprintColor;
         }
         else
         {
             _spriteRend.color = _normalColor;
-            _initialColor = _normalColor; // Mettre à jour _initialColor si le joueur ne sprint pas
+            _initialColor = _normalColor; 
         }
     }
 
@@ -314,14 +321,13 @@ public class PlayerController : MonoBehaviour
 
     void HandleDashInput()
     {
-        if (Input.GetKeyDown(_dashKey) && _dashCooldownTimer <= 0) // Utilisation de _dashKey
+        if (Input.GetKeyDown(_dashKey) && _dashCooldownTimer <= 0)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             float verticalInput = Input.GetAxisRaw("Vertical");
 
             if (horizontalInput == 0 && verticalInput == 0)
             {
-                // Si aucune direction n'est donnée, dasher dans la direction du regard
                 _dashDirection = _spriteRend.flipX ? Vector2.left : Vector2.right;
             }
             else
@@ -339,23 +345,22 @@ public class PlayerController : MonoBehaviour
         _dashTimer = _dashDuration;
         _dashDirection = direction;
         _dashCooldownTimer = _dashCooldown;
-        _initialColor = _spriteRend.color;  // Stocke la couleur actuelle avant de dasher
-        _spriteRend.color = _dashColor; // Changer la couleur au début du dash
+        _initialColor = _spriteRend.color;  
+        _spriteRend.color = _dashColor;
     }
 
     void EndDash()
     {
         _isDashing = false;
-        _myRgbd2D.linearVelocity = Vector2.zero; // Arrêter le dash instantanément
+        _myRgbd2D.linearVelocity = Vector2.zero;
 
-        // Restaurer la couleur correcte à la fin du dash
         if (_isSprinting)
         {
-            _spriteRend.color = _sprintColor; // Restaurer la couleur de sprint si le joueur sprint toujours
+            _spriteRend.color = _sprintColor; 
         }
         else
         {
-            _spriteRend.color = _normalColor; // Sinon, restaurer la couleur normale
+            _spriteRend.color = _normalColor; 
         }
     }
 }

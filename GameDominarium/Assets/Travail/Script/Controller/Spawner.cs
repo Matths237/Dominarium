@@ -12,21 +12,21 @@ public class Spawner : MonoBehaviour
     }
 
     public List<CubeProbability> cubePrefabs;
-    public float spawnRate = 1f;
-    public float screenWidthPercentage = 0.8f;
-    public float cubeLifeTime = 5f;
-    public float minHorizontalSpacing = 1f; // Nouvelle variable
+    public float spawnRate = 2f;
+    public float screenWidthPercentage = 1f;
+    public float cubeLifeTime = 6f;
+    public float minHorizontalSpacing = 2f; 
 
     private float nextSpawnTime = 0f;
     private float screenWidth;
-    private float lastSpawnX; // Memorise la position du dernier spawn
+    private float lastSpawnX;
 
     void Start()
     {
         screenWidth = Camera.main.ViewportToWorldPoint(new Vector3(screenWidthPercentage, 0, 0)).x - Camera.main.ViewportToWorldPoint(new Vector3((1 - screenWidthPercentage), 0, 0)).x / 2;
         spawnRate = Mathf.Abs(spawnRate);
         NormalizeProbabilities();
-        lastSpawnX = 0; // Initialiser
+        lastSpawnX = 0;
     }
 
     void Update()
@@ -43,21 +43,19 @@ public class Spawner : MonoBehaviour
         float randomX;
         bool validPosition = false;
 
-        // Trouver une position valide jusqu'à un nombre limite d'essais
         int attempts = 0;
         do
         {
             randomX = Random.Range(-screenWidth, screenWidth);
-            //Verifier si la position n'est pas trop proche de la derniere
+            
             if (Mathf.Abs(randomX - lastSpawnX) >= minHorizontalSpacing)
             {
                 validPosition = true;
             }
             attempts++;
-            if(attempts > 20){ // Eviter une boucle infinie si la position est toujours invalide
+            if(attempts > 20){ 
                 randomX = Random.Range(-screenWidth, screenWidth);
-                validPosition = true; // Forcer une position meme si pas parfaite
-                Debug.LogWarning("Impossible de trouver une position espacée après plusieurs tentatives.");
+                validPosition = true; 
             }
         } while (!validPosition);
         
@@ -73,12 +71,8 @@ public class Spawner : MonoBehaviour
             GameObject newCube = Instantiate(cubeToSpawn, spawnPosition, Quaternion.identity);
             Destroy(newCube, cubeLifeTime);
         }
-        else
-        {
-            Debug.LogWarning("Aucun cube à spawner ! Vérifiez les probabilités.");
-        }
 
-        lastSpawnX = randomX; // Mettre a jour la position du dernier spawn
+        lastSpawnX = randomX; 
     }
 
     GameObject ChooseCube()
@@ -114,10 +108,6 @@ public class Spawner : MonoBehaviour
                 cubeProb.probability /= totalProbability;
                 cubePrefabs[i] = cubeProb;
             }
-        }
-        else
-        {
-            Debug.LogWarning("Somme des probabilités est zéro.  Assurez-vous d'avoir des probabilités valides.");
         }
     }
 }
