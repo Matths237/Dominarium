@@ -363,4 +363,12 @@ public class PlayerController : MonoBehaviour
             _spriteRend.color = _normalColor; 
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Finish"))
+        {
+            GameManager.Instance.StopBloc(false);
+        }
+        
+    }
 }
