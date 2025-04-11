@@ -66,6 +66,8 @@ public class PlayerController : MonoBehaviour
 
 
 
+
+
     void Awake()
     {
         _myRgbd2D = GetComponent<Rigidbody2D>();
@@ -74,6 +76,8 @@ public class PlayerController : MonoBehaviour
         _spriteRend.color = _normalColor;
         _initialColor = _normalColor; 
     }
+
+
 
     void Update()
     {
@@ -109,6 +113,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void FixedUpdate()
     {
         if (_myRgbd2D.linearVelocity.y < 0)
@@ -130,6 +136,8 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+
 
     void Move()
     {
@@ -165,6 +173,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void StartJump()
     {
         _jumpStartTime = Time.time;
@@ -172,6 +182,8 @@ public class PlayerController : MonoBehaviour
         _myRgbd2D.linearVelocity = new Vector2(_myRgbd2D.linearVelocity.x, _minForceJump);
         _currentJump++;
     }
+
+
 
     void ContinueJump()
     {
@@ -186,6 +198,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void EndJump()
     {
         _isJumping = false;
@@ -195,23 +209,36 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void WallSlide()
     {
         _isWallSliding = false;
 
-        bool isTouchingWallRight = Physics2D.OverlapBox(new Vector2(_spriteRend.bounds.max.x + distanceDW / 2, _spriteRend.bounds.center.y), new Vector2(distanceDW, _spriteRend.bounds.size.y * 0.9f), 0, _detectWall);
-        bool isTouchingWallLeft = Physics2D.OverlapBox(new Vector2(_spriteRend.bounds.min.x - distanceDW / 2, _spriteRend.bounds.center.y), new Vector2(distanceDW, _spriteRend.bounds.size.y * 0.9f), 0, _detectWall);
+        Vector2 rightBoxPos = new Vector2(_spriteRend.bounds.max.x + distanceDW / 2, _spriteRend.bounds.center.y);
+        Vector2 leftBoxPos = new Vector2(_spriteRend.bounds.min.x - distanceDW / 2, _spriteRend.bounds.center.y);
+        Vector2 boxSize = new Vector2(distanceDW, _spriteRend.bounds.size.y * 0.9f);
 
+        Collider2D rightWall = Physics2D.OverlapBox(rightBoxPos, boxSize, 0, _detectWall);
+        Collider2D leftWall = Physics2D.OverlapBox(leftBoxPos, boxSize, 0, _detectWall);
 
-        if (isTouchingWallRight)
+        if (rightWall != null)
         {
             _isWallSliding = true;
-            _wallDirection = -1;
+            if (rightWall.tag != "Platform_eau")
+                _wallDirection = -1;
+            else {
+                _wallDirection = 0;
+            }
         }
-        else if (isTouchingWallLeft)
+        else if (leftWall != null)
         {
             _isWallSliding = true;
-            _wallDirection = 1;
+            if (leftWall.tag != "Platform_eau")
+                _wallDirection = 1;
+            else {
+                _wallDirection = 0;
+            } 
         }
 
         if (_isWallSliding)
@@ -219,6 +246,8 @@ public class PlayerController : MonoBehaviour
             _myRgbd2D.linearVelocity = new Vector2(_myRgbd2D.linearVelocity.x, Mathf.Clamp(_myRgbd2D.linearVelocity.y, -_wallSlideSpeed, float.MaxValue));
         }
     }
+
+
 
 
     void StartWallJump()
@@ -239,6 +268,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
     void ContinueWallJump()
     {
         if (Time.time - _jumpStartTime < _jumpHoldTime)
@@ -254,6 +284,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void EndWallJump()
     {
         _isWallJumping = false;
@@ -262,6 +294,7 @@ public class PlayerController : MonoBehaviour
             _myRgbd2D.linearVelocity = new Vector2(_myRgbd2D.linearVelocity.x, _myRgbd2D.linearVelocity.y * 0.5f);
         }
     }
+
 
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -275,6 +308,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
@@ -282,6 +317,8 @@ public class PlayerController : MonoBehaviour
             _isGrounded = false;
         }
     }
+
+
 
     void HandleJumpInput()
     {
@@ -319,6 +356,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void HandleDashInput()
     {
         if (Input.GetKeyDown(_dashKey) && _dashCooldownTimer <= 0)
@@ -339,6 +378,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     void StartDash(Vector2 direction)
     {
         _isDashing = true;
@@ -348,6 +389,8 @@ public class PlayerController : MonoBehaviour
         _initialColor = _spriteRend.color;  
         _spriteRend.color = _dashColor;
     }
+
+
 
     void EndDash()
     {
@@ -363,11 +406,14 @@ public class PlayerController : MonoBehaviour
             _spriteRend.color = _normalColor; 
         }
     }
+
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Finish"))
         {
-            GameManager.Instance.StopBloc(false);
+            GameManager.Instance.StopBloc(true);
         }
         
     }

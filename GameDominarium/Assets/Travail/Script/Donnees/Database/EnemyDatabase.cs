@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using UnityEngine;
+
 [CreateAssetMenu(fileName = "EnemyDatabase", menuName = "Database/Enemy", order = 1)]
 
 public class EnemyDatabase : ScriptableObject

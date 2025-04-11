@@ -3,7 +3,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 
 [Serializable]
-public class EnemyData : MonoBehaviour
+public class EnemyData
 {
     public string Label;
 
@@ -16,6 +16,9 @@ public class EnemyData : MonoBehaviour
     public int pv;
     public int damage;
     public float speed;
+
+    [Header("STATS")]
+    public float durationIDLE;
 
     
     

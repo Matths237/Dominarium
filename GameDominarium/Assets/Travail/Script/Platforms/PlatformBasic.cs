@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Platforms : MonoBehaviour
+public class PlatformBasic : MonoBehaviour
 {
     public bool IsMoved {private get; set;} = true;
     public float speed = 4;
