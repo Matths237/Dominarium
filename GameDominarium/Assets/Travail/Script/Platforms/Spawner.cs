@@ -1,4 +1,4 @@
-using UnityEngine;
+using UnityEngine; 
 using System.Collections.Generic;
 
 public class Spawner : MonoBehaviour
@@ -21,6 +21,10 @@ public class Spawner : MonoBehaviour
     private float screenWidth;
     private float lastSpawnX;
 
+    [SerializeField] private bool isPaused = false;
+    [SerializeField] private float pauseDuration;
+    [SerializeField] private float resumeTime;
+
     void Start()
     {
         screenWidth = Camera.main.ViewportToWorldPoint(new Vector3(screenWidthPercentage, 0, 0)).x - Camera.main.ViewportToWorldPoint(new Vector3((1 - screenWidthPercentage), 0, 0)).x / 2;
@@ -31,6 +35,15 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
+        if (isPaused)
+        {
+            if (Time.time >= resumeTime)
+            {
+                Resume();
+            }
+            return;
+        }
+
         if (Time.time >= nextSpawnTime)
         {
             SpawnCube();
@@ -109,5 +122,19 @@ public class Spawner : MonoBehaviour
                 cubePrefabs[i] = cubeProb;
             }
         }
+    }
+
+
+    public void StopTemporarily(float stopTime, float resumeTime)
+    {
+        isPaused = true;
+        pauseDuration = stopTime;
+        this.resumeTime = Time.time + resumeTime; 
+    }
+
+    
+    private void Resume()
+    {
+        isPaused = false; 
     }
 }

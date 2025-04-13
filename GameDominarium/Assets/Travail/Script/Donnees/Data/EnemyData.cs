@@ -1,5 +1,4 @@
 using System;
-using System.Reflection.Emit;
 using UnityEngine;
 
 [Serializable]
@@ -9,17 +8,17 @@ public class EnemyData
 
     [Header("SETUP")]
     public Sprite sprite;
-    public float scaleCoef;
-    public Color color;
+    public float scaleCoef = 1f;
+    public Color color = Color.white;
 
     [Header("STATS")]
-    public int pv;
-    public int damage;
-    public float speed;
+    public int pv = 1;
+    public int damage = 1;
+    public float speed = 2f;
 
-    [Header("STATS")]
-    public float durationIDLE;
-
-    
-    
+    [Header("BEHAVIOR")]
+    public float durationIDLE = 1f;
+    public float detectionRange = 10f;
+    public float pursuitDuration = 5f;
+    public float turnSpeed = 180f;
 }

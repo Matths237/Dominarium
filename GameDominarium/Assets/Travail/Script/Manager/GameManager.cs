@@ -1,27 +1,37 @@
-using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.UIElements.Experimental;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
     public static GameManager Instance => _instance;
 
-    public bool blocMoved;
-    
+    [SerializeField] private float _timeStop;
+
+    [SerializeField] private float _timeReprise;
+
     private void Awake()
     {
         if (_instance == null)
             _instance = this;
         else
-            Destroy(gameObject);
+            gameObject.SetActive(false);
 
         DontDestroyOnLoad(gameObject);
-
     }
-    public void StopBloc(bool value)
+
+    public void StopBloc()
     {
-        blocMoved = value;
+        Destroy(gameObject); 
+        PlatformBasic[] platforms = FindObjectsOfType<PlatformBasic>();
+        foreach (var platform in platforms)
+        {
+            platform.StopTemporarily(_timeStop, _timeReprise);
+        }
+        Spawner spawner = FindObjectOfType<Spawner>();
+        if (spawner != null)
+        {
+            spawner.StopTemporarily(_timeStop, _timeReprise);
+        }
     }
-
 }
