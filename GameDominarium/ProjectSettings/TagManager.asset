@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Platform_eau
   - Platform_basic
+  - Despawn
   layers:
   - Default
   - TransparentFX

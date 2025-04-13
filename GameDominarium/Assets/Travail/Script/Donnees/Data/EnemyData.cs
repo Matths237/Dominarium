@@ -2,23 +2,24 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class EnemyData
+public struct EnemyData
 {
     public string Label;
 
     [Header("SETUP")]
     public Sprite sprite;
-    public float scaleCoef = 1f;
-    public Color color = Color.white;
+    public float scaleCoef;
+    public Color color; 
 
     [Header("STATS")]
-    public int pv = 1;
-    public int damage = 1;
-    public float speed = 2f;
+    public int pv;
+    public int damage;
+    public float speed;
 
     [Header("BEHAVIOR")]
-    public float durationIDLE = 1f;
-    public float detectionRange = 10f;
-    public float pursuitDuration = 5f;
-    public float turnSpeed = 180f;
+    public float durationIDLE;
+    public float detectionRange;
+    public float pursuitDuration;
+    public float turnSpeed;
+
 }

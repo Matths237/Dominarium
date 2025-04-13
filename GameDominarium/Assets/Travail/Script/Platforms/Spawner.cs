@@ -1,4 +1,4 @@
-using UnityEngine; 
+using UnityEngine;
 using System.Collections.Generic;
 
 public class Spawner : MonoBehaviour
@@ -14,8 +14,7 @@ public class Spawner : MonoBehaviour
     public List<CubeProbability> cubePrefabs;
     public float spawnRate = 2f;
     public float screenWidthPercentage = 1f;
-    public float cubeLifeTime = 6f;
-    public float minHorizontalSpacing = 2f; 
+    public float minHorizontalSpacing = 2f;
 
     private float nextSpawnTime = 0f;
     private float screenWidth;
@@ -30,7 +29,7 @@ public class Spawner : MonoBehaviour
         screenWidth = Camera.main.ViewportToWorldPoint(new Vector3(screenWidthPercentage, 0, 0)).x - Camera.main.ViewportToWorldPoint(new Vector3((1 - screenWidthPercentage), 0, 0)).x / 2;
         spawnRate = Mathf.Abs(spawnRate);
         NormalizeProbabilities();
-        lastSpawnX = 0;
+        lastSpawnX = Camera.main.transform.position.x; 
     }
 
     void Update()
@@ -55,37 +54,37 @@ public class Spawner : MonoBehaviour
     {
         float randomX;
         bool validPosition = false;
-
         int attempts = 0;
+        const int maxAttempts = 20;
+
         do
         {
             randomX = Random.Range(-screenWidth, screenWidth);
-            
-            if (Mathf.Abs(randomX - lastSpawnX) >= minHorizontalSpacing)
+
+            if (Mathf.Abs(randomX - lastSpawnX) >= minHorizontalSpacing || attempts == 0) 
             {
                 validPosition = true;
             }
             attempts++;
-            if(attempts > 20){ 
-                randomX = Random.Range(-screenWidth, screenWidth);
+            if(attempts > maxAttempts){
                 validPosition = true; 
             }
-        } while (!validPosition);
-        
+        } while (!validPosition && attempts <= maxAttempts);
 
-        Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1.1f, 0));
+
+        Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1.1f, Mathf.Abs(transform.position.z - Camera.main.transform.position.z)));
         spawnPosition.x = randomX;
-        spawnPosition.z = 0;
+        spawnPosition.z = 0; 
 
         GameObject cubeToSpawn = ChooseCube();
 
         if (cubeToSpawn != null)
         {
-            GameObject newCube = Instantiate(cubeToSpawn, spawnPosition, Quaternion.identity);
-            Destroy(newCube, cubeLifeTime);
+            Instantiate(cubeToSpawn, spawnPosition, Quaternion.identity);
+            
         }
 
-        lastSpawnX = randomX; 
+        lastSpawnX = randomX;
     }
 
     GameObject ChooseCube()
@@ -102,6 +101,9 @@ public class Spawner : MonoBehaviour
             }
         }
 
+        if (cubePrefabs.Count > 0 && cubePrefabs[cubePrefabs.Count - 1].probability > 0)
+             return cubePrefabs[cubePrefabs.Count - 1].cubePrefab; 
+
         return null;
     }
 
@@ -113,14 +115,16 @@ public class Spawner : MonoBehaviour
             totalProbability += cubeProb.probability;
         }
 
-        if (totalProbability > 0f)
+        if (totalProbability > 0f && Mathf.Abs(totalProbability - 1.0f) > 0.001f)
         {
-            for (int i = 0; i < cubePrefabs.Count; i++)
-            {
-                CubeProbability cubeProb = cubePrefabs[i];
-                cubeProb.probability /= totalProbability;
-                cubePrefabs[i] = cubeProb;
-            }
+             List<CubeProbability> normalizedList = new List<CubeProbability>();
+             for (int i = 0; i < cubePrefabs.Count; i++)
+             {
+                 CubeProbability cubeProb = cubePrefabs[i];
+                 cubeProb.probability /= totalProbability;
+                 normalizedList.Add(cubeProb);
+             }
+             cubePrefabs = normalizedList;
         }
     }
 
@@ -129,12 +133,12 @@ public class Spawner : MonoBehaviour
     {
         isPaused = true;
         pauseDuration = stopTime;
-        this.resumeTime = Time.time + resumeTime; 
+        this.resumeTime = Time.time + resumeTime;
     }
 
-    
+
     private void Resume()
     {
-        isPaused = false; 
+        isPaused = false;
     }
 }

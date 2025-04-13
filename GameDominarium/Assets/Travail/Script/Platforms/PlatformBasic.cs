@@ -1,10 +1,24 @@
 using UnityEngine;
 
-public class PlatformBasic : MonoBehaviour
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
+public class Platform : MonoBehaviour
 {
     public float speed = 4f;
     private float currentSpeed = 4f;
     private bool canMove = true;
+    private const string DESPAWN_TAG = "Despawn"; 
+
+    void Start()
+    {
+        currentSpeed = speed; 
+        
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if(rb != null && !rb.isKinematic)
+        {
+
+        }
+    }
 
     void Update()
     {
@@ -21,13 +35,13 @@ public class PlatformBasic : MonoBehaviour
 
     private System.Collections.IEnumerator SlowAndResume(float pauseTime, float fadeTime)
     {
-        float originalSpeed = speed;
+        float originalSpeed = currentSpeed; 
         currentSpeed = 0f;
-        canMove = false;
+
 
         yield return new WaitForSeconds(pauseTime);
 
-        canMove = true;
+
         float elapsed = 0f;
         while (elapsed < fadeTime)
         {
@@ -37,5 +51,13 @@ public class PlatformBasic : MonoBehaviour
         }
 
         currentSpeed = originalSpeed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag(DESPAWN_TAG))
+        {
+            Destroy(gameObject);
+        }
     }
 }

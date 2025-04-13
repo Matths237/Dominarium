@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     public void StopBloc()
     {
         Destroy(gameObject); 
-        PlatformBasic[] platforms = FindObjectsOfType<PlatformBasic>();
+        Platform[] platforms = FindObjectsOfType<Platform>();
         foreach (var platform in platforms)
         {
             platform.StopTemporarily(_timeStop, _timeReprise);

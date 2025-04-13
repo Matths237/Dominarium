@@ -15,9 +15,23 @@ MonoBehaviour:
   datas:
   - Label: aled
     sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-    scaleCoef: 2
+    scaleCoef: 11.24
     color: {r: 1, g: 1, b: 1, a: 1}
-    pv: 0
-    damage: 45
-    speed: 0
+    pv: 1
+    damage: 141
+    speed: 15
     durationIDLE: 2
+    detectionRange: 10
+    pursuitDuration: 5
+    turnSpeed: 130
+  - Label: aled
+    sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    scaleCoef: 11.24
+    color: {r: 1, g: 1, b: 1, a: 1}
+    pv: 1
+    damage: 45
+    speed: 6
+    durationIDLE: 2
+    detectionRange: 25
+    pursuitDuration: 5
+    turnSpeed: 180

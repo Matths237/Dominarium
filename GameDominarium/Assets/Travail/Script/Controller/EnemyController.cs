@@ -55,13 +55,6 @@ public class EnnemyController : MonoBehaviour
             return;
         }
 
-         if (data == null)
-         {
-             Debug.LogError($"Impossible de charger EnemyData pour id {id}, random {randomAllow}");
-             enabled = false;
-             return;
-         }
-
         GameObject playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null)
         {
@@ -103,7 +96,7 @@ public class EnnemyController : MonoBehaviour
 
     void Update()
     {
-        if (_state <= STATE.INIT || _state == STATE.DEATH || data == null)
+        if (_state <= STATE.INIT || _state == STATE.DEATH)
             return;
 
         switch (_state)
@@ -121,9 +114,9 @@ public class EnnemyController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_state <= STATE.INIT || _state == STATE.DEATH || data == null)
+        if (_state <= STATE.INIT || _state == STATE.DEATH)
         {
-            if(_state != STATE.DEATH && _rgbd2D != null) _rgbd2D.linearVelocity = Vector2.zero; // Sécurité
+            if(_state != STATE.DEATH && _rgbd2D != null) _rgbd2D.linearVelocity = Vector2.zero; 
             return;
         }
 
@@ -139,8 +132,8 @@ public class EnnemyController : MonoBehaviour
              _currentSpeed = Mathf.MoveTowards(_currentSpeed, 0f, decelRate * Time.fixedDeltaTime);
         }
 
-        Vector2 currentDirection = transform.up; // Direction actuelle basée sur la rotation du sprite
-        Vector2 finalDirection = currentDirection; // Direction par défaut
+        Vector2 currentDirection = transform.up; 
+        Vector2 finalDirection = currentDirection; 
 
         if (_isFollowing && _state == STATE.FOLLOW && _playerTransform != null)
         {
@@ -153,21 +146,20 @@ public class EnnemyController : MonoBehaviour
                 float angleChange = Mathf.Clamp(angleDifference, -maxDegreesDelta, maxDegreesDelta);
 
                 Quaternion rotation = Quaternion.Euler(0, 0, angleChange);
-                finalDirection = (rotation * currentDirection).normalized; // Calculer la nouvelle direction
+                finalDirection = (rotation * currentDirection).normalized; 
             }
         }
 
-        Vector2 newVelocity = finalDirection * _currentSpeed; // Calculer la vélocité finale
-        _rgbd2D.linearVelocity = newVelocity; // Appliquer la vélocité
+        Vector2 newVelocity = finalDirection * _currentSpeed;
+        _rgbd2D.linearVelocity = newVelocity;
 
-        // Mettre à jour la rotation pour correspondre à la direction du mouvement
+
         if (finalDirection.sqrMagnitude > 0.01f)
         {
             float facingAngle = Mathf.Atan2(finalDirection.y, finalDirection.x) * Mathf.Rad2Deg - 90f;
             _rgbd2D.MoveRotation(facingAngle);
         }
 
-        // Vérifier si on doit passer à IDLE après avoir décéléré
         if (!_isFollowing && _currentSpeed <= 0.01f && _state != STATE.IDLE)
         {
             GoToIdleState();
@@ -232,7 +224,6 @@ public class EnnemyController : MonoBehaviour
          {
             float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
             _rgbd2D.MoveRotation(targetAngle);
-            // Pas besoin de modifier transform.up ici, FixedUpdate utilise la rotation du Rigidbody
          }
     }
 
@@ -250,7 +241,7 @@ public class EnnemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (_state == STATE.DEATH || data == null) return;
+        if (_state == STATE.DEATH) return;
 
         if (collision.gameObject.CompareTag("Player"))
         {
@@ -285,7 +276,7 @@ public class EnnemyController : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (_state == STATE.DEATH || data == null) return;
+        if (_state == STATE.DEATH) return;
 
         data.pv -= amount;
         if (data.pv <= 0)
@@ -299,7 +290,7 @@ public class EnnemyController : MonoBehaviour
         EnemyData displayData = data;
 
         #if UNITY_EDITOR
-        if (displayData == null && !Application.isPlaying) {
+        if (!Application.isPlaying) {
              DatabaseManager dbm = FindObjectOfType<DatabaseManager>();
              if(dbm != null) {
                  try {
@@ -309,24 +300,11 @@ public class EnnemyController : MonoBehaviour
         }
         #endif
 
-        if (displayData != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, displayData.detectionRange);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, displayData.detectionRange * 1.2f);
-        }
-        else
-        {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawWireSphere(transform.position, 5f);
-        }
-
         #if UNITY_EDITOR
         if (showDebugInfo)
         {
             string label = $"State: {_state}\nSpeed: {_currentSpeed.ToString("F1")}\nFollowing: {_isFollowing}";
-            if (displayData == null && !Application.isPlaying) label += "\n(Data not loaded)";
+            if (!Application.isPlaying) label += "\n(Data not loaded)";
              UnityEditor.Handles.Label(transform.position + Vector3.up * 1.5f, label);
         }
         #endif

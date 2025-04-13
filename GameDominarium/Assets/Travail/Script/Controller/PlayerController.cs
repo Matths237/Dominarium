@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("HEALTH")]
+     [Header("HEALTH")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private float invincibilityDuration = 1f;
     [SerializeField] private float respawnDelay = 2f;
@@ -69,8 +69,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Color _normalColor = Color.white;
     [SerializeField] private Color _dashColor = Color.blue;
     [SerializeField] private Color damageColor = Color.magenta;
-    [SerializeField] private Color _deathColor = Color.black;
-
+    [SerializeField] private Color deathColor = Color.black;
 
     void Awake()
     {
@@ -85,33 +84,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
-
-        HandleInput();
-        UpdateTimers();
-        UpdateGroundingState();
-        UpdateColor();
-    }
-
-    void FixedUpdate()
-    {
-        if (isDead) return;
-
-        ApplyGravityModifiers();
-        HandleDashingMovement();
-    }
-
-    void HandleInput()
-    {
         Move();
         WallSlide();
         HandleJumpInput();
         HandleDashInput();
-    }
 
-    void UpdateTimers()
-    {
-         if (_timeSinceLastWallJump > 0)
+        if (_timeSinceLastWallJump > 0)
         {
             _timeSinceLastWallJump -= Time.deltaTime;
         }
@@ -121,37 +99,49 @@ public class PlayerController : MonoBehaviour
             _timeToStopStick -= Time.deltaTime;
         }
 
+        if (_isGrounded && !_hasJumpedSinceGrounded && _myRgbd2D.linearVelocity.y < -0.1f)
+        {
+            _currentJump++;
+            _hasJumpedSinceGrounded = true;
+        }
+
         if (_dashCooldownTimer > 0)
         {
             _dashCooldownTimer -= Time.deltaTime;
         }
 
-        if (isInvincible)
+        if (_isDashing)
         {
-            invincibilityTimer -= Time.deltaTime;
-            if (invincibilityTimer <= 0)
+            _spriteRend.color = _dashColor;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (_myRgbd2D.linearVelocity.y < 0)
+        {
+            _myRgbd2D.linearVelocity += Vector2.up * Physics2D.gravity.y * (2.5f - 1) * Time.deltaTime;
+        }
+        else if (_myRgbd2D.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
+        {
+            _myRgbd2D.linearVelocity += Vector2.up * Physics2D.gravity.y * (2f - 1) * Time.deltaTime;
+        }
+
+        if (_isDashing)
+        {
+            _myRgbd2D.linearVelocity = _dashDirection * _dashSpeed;
+            _dashTimer -= Time.deltaTime;
+            if (_dashTimer <= 0)
             {
-                isInvincible = false;
+                EndDash();
             }
         }
     }
 
-    void UpdateGroundingState()
-    {
-         if (_isGrounded && !_hasJumpedSinceGrounded && _myRgbd2D.linearVelocity.y < -0.1f)
-        {
-            _currentJump++;
-            _hasJumpedSinceGrounded = true;
-        }
-    }
 
     void UpdateColor()
     {
-        if (isInvincible && !isDead)
-        {
-             // Flash logic is handled by the coroutine
-        }
-        else if (_isDashing)
+        if (_isDashing)
         {
             _spriteRend.color = _dashColor;
         }
@@ -164,33 +154,6 @@ public class PlayerController : MonoBehaviour
              _spriteRend.color = _normalColor;
         }
     }
-
-
-    void ApplyGravityModifiers()
-    {
-        if (_myRgbd2D.linearVelocity.y < 0)
-        {
-            _myRgbd2D.linearVelocity += Vector2.up * Physics2D.gravity.y * (2.5f - 1) * Time.fixedDeltaTime;
-        }
-        else if (_myRgbd2D.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
-        {
-            _myRgbd2D.linearVelocity += Vector2.up * Physics2D.gravity.y * (2f - 1) * Time.fixedDeltaTime;
-        }
-    }
-
-    void HandleDashingMovement()
-    {
-        if (_isDashing)
-        {
-            _myRgbd2D.linearVelocity = _dashDirection * _dashSpeed;
-            _dashTimer -= Time.fixedDeltaTime;
-            if (_dashTimer <= 0)
-            {
-                EndDash();
-            }
-        }
-    }
-
 
     void Move()
     {
@@ -207,6 +170,11 @@ public class PlayerController : MonoBehaviour
         if (_timeSinceLastWallJump > 0)
         {
             newSpeed *= 0.7f;
+        }
+
+        if (!_isDashing)
+        {
+            _myRgbd2D.linearVelocity = new Vector2(newSpeed, _myRgbd2D.linearVelocity.y);
         }
 
         if (!_isDashing)
@@ -248,7 +216,6 @@ public class PlayerController : MonoBehaviour
     void WallSlide()
     {
         _isWallSliding = false;
-        if (isDead) return; // Do not wallslide if dead
 
         Vector2 rightBoxPos = new Vector2(_spriteRend.bounds.max.x + distanceDW / 2, _spriteRend.bounds.center.y);
         Vector2 leftBoxPos = new Vector2(_spriteRend.bounds.min.x - distanceDW / 2, _spriteRend.bounds.center.y);
@@ -257,24 +224,28 @@ public class PlayerController : MonoBehaviour
         Collider2D rightWall = Physics2D.OverlapBox(rightBoxPos, boxSize, 0, _detectWall);
         Collider2D leftWall = Physics2D.OverlapBox(leftBoxPos, boxSize, 0, _detectWall);
 
-        if (rightWall != null && !_isGrounded)
+        if (rightWall != null)
         {
             _isWallSliding = true;
-             _wallDirection = -1;
-
+            if (rightWall.tag != "Platform_eau")
+                _wallDirection = -1;
+            else {
+                _wallDirection = 0;
+            }
         }
-        else if (leftWall != null && !_isGrounded)
+        else if (leftWall != null)
         {
             _isWallSliding = true;
-            _wallDirection = 1;
-
+            if (leftWall.tag != "Platform_eau")
+                _wallDirection = 1;
+            else {
+                _wallDirection = 0;
+            }
         }
 
         if (_isWallSliding)
         {
             _myRgbd2D.linearVelocity = new Vector2(_myRgbd2D.linearVelocity.x, Mathf.Clamp(_myRgbd2D.linearVelocity.y, -_wallSlideSpeed, float.MaxValue));
-            _currentJump = 0; // Reset jumps when wall sliding
-            _currentWallJumps = 0; // Reset wall jumps when starting slide
         }
     }
 
@@ -293,7 +264,6 @@ public class PlayerController : MonoBehaviour
         _currentJump++;
         _hasJumpedSinceGrounded = true;
         EndJump();
-        _isWallSliding = false;
     }
 
     void ContinueWallJump()
@@ -320,26 +290,51 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            _isGrounded = true;
+            _currentJump = 0;
+            _currentWallJumps = 0;
+            _hasJumpedSinceGrounded = false;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            _isGrounded = false;
+        }
+    }
+
     void HandleJumpInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (_isWallSliding && (_infiniteWallJumps || _currentWallJumps < _maxWallJumps))
             {
-                StartWallJump();
+                if (_timeToStopStick <= 0)
+                {
+                    StartWallJump();
+                }
             }
-            else if (_currentJump < _limitJump || _isGrounded) // Allow jump if grounded even if limit reached
+            else if (_currentJump < _limitJump)
             {
-                if (_isGrounded) _currentJump = 0; // Ensure jump count resets on ground jump
                 StartJump();
                 _hasJumpedSinceGrounded = true;
             }
         }
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && _isJumping)
         {
-             if (_isJumping) ContinueJump();
-             if (_isWallJumping) ContinueWallJump();
+            ContinueJump();
+        }
+
+        if (Input.GetKey(KeyCode.Space) && _isWallJumping)
+        {
+            ContinueWallJump();
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -365,8 +360,7 @@ public class PlayerController : MonoBehaviour
                 _dashDirection = new Vector2(horizontalInput, verticalInput).normalized;
             }
 
-            if (_dashDirection != Vector2.zero) // Prevent zero vector dash
-                 StartDash(_dashDirection);
+            StartDash(_dashDirection);
         }
     }
 
@@ -382,8 +376,18 @@ public class PlayerController : MonoBehaviour
     void EndDash()
     {
         _isDashing = false;
+        
         _myRgbd2D.linearVelocity = _dashDirection * _dashSpeed * _dashEndMomentumMultiplier;
-        UpdateColor(); // Update color immediately after dash ends
+
+        
+        if (_isSprinting)
+        {
+            _spriteRend.color = _sprintColor;
+        }
+        else
+        {
+            _spriteRend.color = _normalColor;
+        }
     }
 
     public void TakeDamage(int damage)
@@ -407,13 +411,22 @@ public class PlayerController : MonoBehaviour
         _spriteRend.color = damageColor;
         yield return new WaitForSeconds(damageFlashDuration);
 
-        // Only revert color if not dead and invincibility hasn't worn off *exactly* during the flash
         if (!isDead && isInvincible)
         {
-             UpdateColor(); // Revert to appropriate color based on state
+             UpdateColor(); 
         }
-         // If invincibility ended during flash, Update will handle color next frame.
-         // If died during flash, Die() handles state.
+    }
+
+    public int CurrentHealth
+    {
+        get { return currentHealth; }
+        private set { currentHealth = Mathf.Clamp(value, 0, maxHealth); }
+    }
+
+    public Vector3 RespawnPoint
+    {
+        get { return respawnPoint; }
+        set { respawnPoint = value; }
     }
 
     void Die()
@@ -422,14 +435,14 @@ public class PlayerController : MonoBehaviour
 
         isDead = true;
         _myRgbd2D.linearVelocity = Vector2.zero;
-        _myRgbd2D.simulated = false; // Stop physics interactions
-        _collider.enabled = false; // Disable collisions
-        _isDashing = false; // Stop dash state
+        _myRgbd2D.simulated = false; 
+        _collider.enabled = false; 
+        _isDashing = false; 
         _isJumping = false;
         _isWallJumping = false;
         _isWallSliding = false;
 
-        _spriteRend.color = _deathColor; 
+        _spriteRend.color = deathColor; 
 
         Invoke(nameof(Respawn), respawnDelay);
     }
@@ -439,50 +452,23 @@ public class PlayerController : MonoBehaviour
         transform.position = respawnPoint;
         currentHealth = maxHealth;
         isDead = false;
-        isInvincible = false; // Ensure not invincible on respawn
+        isInvincible = false; 
         invincibilityTimer = 0;
-        _myRgbd2D.simulated = true; // Re-enable physics
-        _collider.enabled = true; // Re-enable collisions
-        _myRgbd2D.linearVelocity = Vector2.zero; // Reset velocity
+        _myRgbd2D.simulated = true;
+        _collider.enabled = true; 
+        _myRgbd2D.linearVelocity = Vector2.zero;
         _currentJump = 0;
         _currentWallJumps = 0;
-        _hasJumpedSinceGrounded = false; // Will be set true on landing
-        _spriteRend.color = _normalColor; // Reset color
-        _dashCooldownTimer = 0; // Optionally reset dash cooldown
+        _hasJumpedSinceGrounded = false; 
+        _spriteRend.color = _normalColor; 
+        _dashCooldownTimer = 0;
     }
-
-
-     private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // Use CompareTag for efficiency if "Ground" layer is commonly checked
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            _isGrounded = true;
-            _currentJump = 0;
-            _currentWallJumps = 0;
-            _hasJumpedSinceGrounded = false;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            _isGrounded = false;
-        }
-    }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Finish"))
         {
-           // GameManager.Instance.StopBloc(); // Make sure GameManager exists
-        }
-        // Example: Taking damage from a hazard trigger
-        if(collision.CompareTag("Hazard"))
-        {
-            TakeDamage(25); // Example damage amount
+           GameManager.Instance.StopBloc(); 
         }
     }
 }
