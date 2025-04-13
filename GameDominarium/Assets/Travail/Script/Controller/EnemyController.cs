@@ -248,20 +248,20 @@ public class EnnemyController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (_state == STATE.DEATH || data == null) return;
+    // private void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     if (_state == STATE.DEATH || data == null) return;
 
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                playerController.TakeDamage(data.damage);
-            }
-            Die();
-        }
-    }
+    //     if (collision.gameObject.CompareTag("Player"))
+    //     {
+    //         PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+    //         if (playerController != null)
+    //         {
+    //             playerController.TakeDamage(data.damage);
+    //         }
+    //         Die();
+    //     }
+    // }
 
     public void Die()
     {
