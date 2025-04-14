@@ -18,12 +18,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _speedMove = 8;
     [SerializeField] private float _runSpeedMultiplier = 1.5f;
     [SerializeField] private KeyCode _runKey = KeyCode.LeftShift;
+    [SerializeField] private float momentum;
 
     [Header("JUMP")]
     [SerializeField] private float _minForceJump = 12;
     [SerializeField] private float _maxForceJump = 14;
     [SerializeField] private float _jumpHoldTime = 0.2f;
     [SerializeField] private int _limitJump = 1;
+
     private int _currentJump;
     private bool _hasJumpedSinceGrounded = false;
     private float _jumpStartTime;
@@ -161,7 +163,7 @@ public class PlayerController : MonoBehaviour
         _isSprinting = Input.GetKey(_runKey);
         float targetSpeed = moveInput * _speedMove * (_isSprinting ? _runSpeedMultiplier : 1);
         float currentSpeed = _myRgbd2D.linearVelocity.x;
-        float accelerationRate = Mathf.Abs(moveInput) > 0.01f ? 50 : 50;
+        float accelerationRate = Mathf.Abs(moveInput) > 0.01f ? momentum : momentum;
         float newSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, accelerationRate * Time.deltaTime);
 
         if (moveInput != 0)
