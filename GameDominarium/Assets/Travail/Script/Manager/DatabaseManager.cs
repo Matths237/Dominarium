@@ -5,8 +5,6 @@ public class DatabaseManager : MonoBehaviour
     private static DatabaseManager _instance;
     public static DatabaseManager Instance => _instance;
 
-    [SerializeField] private EnemyDatabase _enemyDatabase;
-
     private void Awake()
     {
         if (_instance == null)
@@ -17,5 +15,4 @@ public class DatabaseManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public EnemyData GetData(int id, bool random = false) => _enemyDatabase.GetData(id, random);
 }

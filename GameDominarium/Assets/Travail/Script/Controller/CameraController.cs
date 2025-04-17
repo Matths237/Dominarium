@@ -1,52 +1,47 @@
 using UnityEngine;
+using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform _target;
-    [SerializeField] private Vector3 _offset;
+    [Header("Shake Parameters")]
+    [SerializeField] private float defaultShakeDuration = 0.15f;
+    [SerializeField] private float defaultShakeMagnitude = 0.3f; 
+    [SerializeField] private float dampingSpeed = 1.0f;
 
-    [SerializeField] private Vector3 _velocity;
+    private Vector3 initialPosition; 
+    private float currentShakeDuration = 0f;  
+    private float currentShakeMagnitude = 0f;
 
-    [SerializeField] private Vector2 _sizeBoxCast;
-
-    [SerializeField] private float _smoothTime = 0.1f;
-
-    private void Awake()
+    void Awake()
     {
-        _target = FindObjectOfType<PlayerController>().transform;
-    }
-
-    void Start()
-    {
-        
+        initialPosition = transform.localPosition;
     }
 
     void Update()
     {
-        var limiteMin = transform.TransformPoint(-_sizeBoxCast / 2);
-        var limiteMax = transform.TransformPoint(_sizeBoxCast / 2);
-
-        var isOutLeft = _target.position.x < limiteMin.x;
-        var isOutRight = _target.position.x > limiteMax.x;
-        var isOutUp = _target.position.y > limiteMax.y;
-        var isOutDown = _target.position.y < limiteMin.y;
-
-        float targetOutX = isOutLeft ? limiteMin.x : isOutRight ? limiteMax.x : transform.position.x; 
-        float targetOutY = isOutDown ? limiteMin.y : isOutUp ? limiteMax.y : transform.position.y; 
-
-        var targetOut = new Vector3(targetOutX, targetOutY, transform.position.z);
-        var smoothPos = Vector3.SmoothDamp(transform.position, targetOut, ref _velocity, _smoothTime);
-
-        Vector3 targetPos = new(smoothPos.x, smoothPos.y, transform.position.z);
-
-        transform.position = targetPos;
+        if (currentShakeDuration > 0)
+        {
+            Vector3 shakeOffset = Random.insideUnitSphere * currentShakeMagnitude;
+            transform.localPosition = initialPosition + shakeOffset;
+            currentShakeDuration -= Time.deltaTime * dampingSpeed;
+        }
+        else
+        {
+            currentShakeDuration = 0f;
+            transform.localPosition = initialPosition;
+        }
     }
 
-
-
-    private void OnDrawGizmosSelected()
+    public void TriggerShake()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, _sizeBoxCast);
+        currentShakeDuration = defaultShakeDuration;
+        currentShakeMagnitude = defaultShakeMagnitude;
+    }
+
+    public void TriggerShake(float duration, float magnitude)
+    {
+        currentShakeDuration = duration;
+        currentShakeMagnitude = magnitude;
+
     }
 }

@@ -66,6 +66,9 @@ public class PlayerController : MonoBehaviour
     private Collider2D _collider;
     private bool _isSprinting;
 
+    [Header("EFFECTS")]
+    [SerializeField] private CameraController cameraController;
+
     [Header("COLOR")]
     [SerializeField] private Color _sprintColor = Color.red;
     [SerializeField] private Color _normalColor = Color.white;
@@ -301,6 +304,7 @@ public class PlayerController : MonoBehaviour
             _currentWallJumps = 0;
             _hasJumpedSinceGrounded = false;
         }
+        
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -372,7 +376,12 @@ public class PlayerController : MonoBehaviour
         _dashTimer = _dashDuration;
         _dashDirection = direction;
         _dashCooldownTimer = _dashCooldown;
-        _spriteRend.color = _dashColor;
+        _spriteRend.color = _dashColor; 
+
+        if (cameraController != null)
+        {
+            cameraController.TriggerShake();
+        }
     }
 
     void EndDash()
@@ -464,13 +473,5 @@ public class PlayerController : MonoBehaviour
         _hasJumpedSinceGrounded = false; 
         _spriteRend.color = _normalColor; 
         _dashCooldownTimer = 0;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.CompareTag("Finish"))
-        {
-           GameManager.Instance.StopBloc(); 
-        }
     }
 }

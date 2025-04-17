@@ -7,6 +7,8 @@ TagManager:
   - Platform_eau
   - Platform_basic
   - Despawn
+  - Coin
+  - DeathZone
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
+  - Collision
   - Background
   - Foreground
   - Ground

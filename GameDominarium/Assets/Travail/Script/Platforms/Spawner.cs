@@ -1,144 +1,116 @@
 using UnityEngine;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 
 public class Spawner : MonoBehaviour
 {
-    [System.Serializable]
-    public struct CubeProbability
-    {
-        public GameObject cubePrefab;
-        [Range(0f, 1f)]
-        public float probability;
-    }
+    [Header("Spawning Settings")]
+    [Tooltip("Référence vers l'asset PlatformDatabase contenant les types de plateformes.")]
+    public PlatformDatabase platformDatabase;
 
-    public List<CubeProbability> cubePrefabs;
     public float spawnRate = 2f;
-    public float screenWidthPercentage = 1f;
+    [Range(0f, 1f)]
+    public float screenWidthPercentage = 0.7f; 
     public float minHorizontalSpacing = 2f;
+    public float spawnHeightOffset = 1.1f; 
 
     private float nextSpawnTime = 0f;
-    private float screenWidth;
+    private float screenWorldWidth; 
     private float lastSpawnX;
 
+    [Header("Pausing")]
     [SerializeField] private bool isPaused = false;
-    [SerializeField] private float pauseDuration;
-    [SerializeField] private float resumeTime;
+
+    [SerializeField] private float resumeTimeInternal; 
 
     void Start()
     {
-        screenWidth = Camera.main.ViewportToWorldPoint(new Vector3(screenWidthPercentage, 0, 0)).x - Camera.main.ViewportToWorldPoint(new Vector3((1 - screenWidthPercentage), 0, 0)).x / 2;
-        spawnRate = Mathf.Abs(spawnRate);
-        NormalizeProbabilities();
-        lastSpawnX = Camera.main.transform.position.x; 
+        if (platformDatabase == null)
+        {
+            this.enabled = false; 
+            return;
+        }
+
+        float halfWidth = Camera.main.orthographicSize * Camera.main.aspect;
+        screenWorldWidth = 2f * halfWidth * screenWidthPercentage;
+
+        spawnRate = Mathf.Abs(spawnRate); 
+
+
+        lastSpawnX = Camera.main.transform.position.x;
     }
 
     void Update()
     {
         if (isPaused)
         {
-            if (Time.time >= resumeTime)
+            if (Time.time >= resumeTimeInternal)
             {
                 Resume();
             }
-            return;
+            return; 
         }
 
+        
         if (Time.time >= nextSpawnTime)
         {
-            SpawnCube();
+            SpawnPlatform(); 
             nextSpawnTime = Time.time + 1f / spawnRate;
         }
     }
 
-    void SpawnCube()
+    void SpawnPlatform()
     {
+        if (platformDatabase == null || platformDatabase.platformTypes.Count == 0) return; 
+
+        PlatformData selectedPlatformData = platformDatabase.ChoosePlatform();
+        if (selectedPlatformData == null || selectedPlatformData.platformPrefab == null)
+        {
+            return; 
+        }
+
         float randomX;
-        bool validPosition = false;
         int attempts = 0;
         const int maxAttempts = 20;
+        float cameraLeftEdge = Camera.main.transform.position.x - (screenWorldWidth / 2f);
+        float cameraRightEdge = Camera.main.transform.position.x + (screenWorldWidth / 2f);
 
         do
         {
-            randomX = Random.Range(-screenWidth, screenWidth);
-
-            if (Mathf.Abs(randomX - lastSpawnX) >= minHorizontalSpacing || attempts == 0) 
-            {
-                validPosition = true;
-            }
+            randomX = Random.Range(cameraLeftEdge, cameraRightEdge);
             attempts++;
-            if(attempts > maxAttempts){
-                validPosition = true; 
-            }
-        } while (!validPosition && attempts <= maxAttempts);
+        } while (attempts > 1 && Mathf.Abs(randomX - lastSpawnX) < minHorizontalSpacing && attempts <= maxAttempts);
+        Vector3 spawnPositionViewport = new Vector3(0.5f, spawnHeightOffset, Mathf.Abs(transform.position.z - Camera.main.transform.position.z));
+        Vector3 spawnPositionWorld = Camera.main.ViewportToWorldPoint(spawnPositionViewport);
+        spawnPositionWorld.x = randomX;
+        spawnPositionWorld.z = 0; 
 
+        GameObject newPlatformObject = Instantiate(selectedPlatformData.platformPrefab, spawnPositionWorld, Quaternion.identity);
 
-        Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 1.1f, Mathf.Abs(transform.position.z - Camera.main.transform.position.z)));
-        spawnPosition.x = randomX;
-        spawnPosition.z = 0; 
-
-        GameObject cubeToSpawn = ChooseCube();
-
-        if (cubeToSpawn != null)
+        Platform platformComponent = newPlatformObject.GetComponent<Platform>();
+        if (platformComponent != null)
         {
-            Instantiate(cubeToSpawn, spawnPosition, Quaternion.identity);
-            
+
+            platformComponent.SetSpeed(selectedPlatformData.fallSpeed);
         }
 
         lastSpawnX = randomX;
     }
 
-    GameObject ChooseCube()
+    public void PauseSpawning(float duration)
     {
-        float randomNumber = Random.value;
-        float cumulativeProbability = 0f;
+        if (duration <= 0) return;
 
-        foreach (CubeProbability cubeProb in cubePrefabs)
-        {
-            cumulativeProbability += cubeProb.probability;
-            if (randomNumber <= cumulativeProbability)
-            {
-                return cubeProb.cubePrefab;
-            }
-        }
-
-        if (cubePrefabs.Count > 0 && cubePrefabs[cubePrefabs.Count - 1].probability > 0)
-             return cubePrefabs[cubePrefabs.Count - 1].cubePrefab; 
-
-        return null;
-    }
-
-    void NormalizeProbabilities()
-    {
-        float totalProbability = 0f;
-        foreach (CubeProbability cubeProb in cubePrefabs)
-        {
-            totalProbability += cubeProb.probability;
-        }
-
-        if (totalProbability > 0f && Mathf.Abs(totalProbability - 1.0f) > 0.001f)
-        {
-             List<CubeProbability> normalizedList = new List<CubeProbability>();
-             for (int i = 0; i < cubePrefabs.Count; i++)
-             {
-                 CubeProbability cubeProb = cubePrefabs[i];
-                 cubeProb.probability /= totalProbability;
-                 normalizedList.Add(cubeProb);
-             }
-             cubePrefabs = normalizedList;
-        }
-    }
-
-
-    public void StopTemporarily(float stopTime, float resumeTime)
-    {
         isPaused = true;
-        pauseDuration = stopTime;
-        this.resumeTime = Time.time + resumeTime;
+        resumeTimeInternal = Time.time + duration;
     }
 
-
-    private void Resume()
+    public void Resume()
     {
-        isPaused = false;
+        if (isPaused)
+        {
+            isPaused = false;
+
+            nextSpawnTime = Mathf.Max(nextSpawnTime, Time.time + (1f / spawnRate) * 0.1f); 
+        }
     }
 }

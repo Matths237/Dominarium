@@ -1,37 +1,36 @@
 using UnityEngine;
-using System.Collections.Generic;
+
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
     public static GameManager Instance => _instance;
 
-    [SerializeField] private float _timeStop;
-
-    [SerializeField] private float _timeReprise;
+    [SerializeField] private int coinsCollected = 0;
+    public int CoinsCollected => coinsCollected;
+    private UnityEvent<int> OnCoinsChanged;
 
     private void Awake()
     {
         if (_instance == null)
+        {
             _instance = this;
+            DontDestroyOnLoad(gameObject);
+            OnCoinsChanged?.Invoke(coinsCollected);
+        }
         else
-            gameObject.SetActive(false);
-
-        DontDestroyOnLoad(gameObject);
+        {
+            Destroy(gameObject);
+        }
     }
 
-    public void StopBloc()
+    public void AddCoin(int amount)
     {
-        Destroy(gameObject); 
-        Platform[] platforms = FindObjectsOfType<Platform>();
-        foreach (var platform in platforms)
+        if (amount > 0)
         {
-            platform.StopTemporarily(_timeStop, _timeReprise);
-        }
-        Spawner spawner = FindObjectOfType<Spawner>();
-        if (spawner != null)
-        {
-            spawner.StopTemporarily(_timeStop, _timeReprise);
+            coinsCollected += amount;
+            OnCoinsChanged?.Invoke(coinsCollected);
         }
     }
 }
