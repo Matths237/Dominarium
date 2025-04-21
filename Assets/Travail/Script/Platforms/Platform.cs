@@ -5,30 +5,38 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Platform : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField]
     private float baseSpeed = 4f;
-    private float currentSpeed; 
+    private float currentSpeed;
 
     private bool canMove = true;
-    private bool isCurrentlyStopping = false; 
+    private bool isCurrentlyStopping = false;
 
     private const string DESPAWN_TAG = "Despawn";
+    private const string PLAYER_TAG = "Player";
 
-    void Awake() 
+    private Rigidbody2D rb;
+
+    void Awake()
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        rb.isKinematic = true; 
+        rb = GetComponent<Rigidbody2D>();
+        rb.isKinematic = true;
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         currentSpeed = baseSpeed;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (Mathf.Approximately(currentSpeed, 0f))
+        if (Mathf.Approximately(currentSpeed, 0f) || !canMove)
             return;
-        transform.Translate(Vector3.down * currentSpeed * Time.deltaTime, Space.World);
+
+        Vector2 newPosition = rb.position + Vector2.down * currentSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(newPosition);
     }
+
     public void SetSpeed(float speed)
     {
         baseSpeed = speed;
@@ -38,10 +46,6 @@ public class Platform : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// </summary>
-    /// <param name="stopDuration"></param>
-    /// <param name="resumeDelay"></param>
     public void StopTemporarily(float stopDuration, float resumeDelay)
     {
         if (stopCoroutineReference != null)
@@ -53,13 +57,10 @@ public class Platform : MonoBehaviour
 
     private Coroutine stopCoroutineReference = null;
 
-    /// <summary>
-    /// </summary>
-    /// <param name="pauseTime"></param>
-    /// <param name="fadeTime"></param>
     private IEnumerator StopAndResumeSequence(float pauseTime, float fadeTime)
     {
         isCurrentlyStopping = true;
+        float originalSpeedBeforeStop = currentSpeed;
         currentSpeed = 0f;
 
         if (pauseTime > 0)
@@ -74,7 +75,7 @@ public class Platform : MonoBehaviour
             {
                 elapsed += Time.deltaTime;
                 currentSpeed = Mathf.Lerp(0f, baseSpeed, elapsed / fadeTime);
-                yield return null; 
+                yield return null;
             }
         }
 
@@ -87,8 +88,40 @@ public class Platform : MonoBehaviour
     {
         if (other.CompareTag(DESPAWN_TAG))
         {
-
             Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(PLAYER_TAG))
+        {
+            ContactPoint2D[] contacts = collision.contacts;
+            bool landedOnTop = false;
+            foreach (ContactPoint2D contact in contacts)
+            {
+                if (contact.normal.y > 0.5f)
+                {
+                    landedOnTop = true;
+                    break;
+                }
+            }
+
+            if (landedOnTop)
+            {
+                collision.transform.SetParent(transform);
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(PLAYER_TAG))
+        {
+            if (collision.transform.parent == transform)
+            {
+                collision.transform.SetParent(null);
+            }
         }
     }
 }

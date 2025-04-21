@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9189574677245189177}
   - component: {fileID: 4441481214112370562}
   - component: {fileID: 4641700422209791840}
-  - component: {fileID: 8104868716079679858}
+  - component: {fileID: 3226144084977266704}
   m_Layer: 10
   m_Name: blocTypeBulle
   m_TagString: Platform_eau
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4921976293810934633}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.3658006, y: -3.6562357, z: 0}
+  m_LocalPosition: {x: -2.775473, y: -0.080240875, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a59ca27b464a5f4458a5966b8c04e690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseSpeed: 4
+  baseSpeed: 12
 --- !u!212 &4441481214112370562
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -130,8 +130,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!68 &8104868716079679858
-EdgeCollider2D:
+--- !u!70 &3226144084977266704
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -140,7 +140,7 @@ EdgeCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: a7d6bd3c4e7faef488b93752bf66216a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -164,40 +164,6 @@ EdgeCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -3.152052, y: 1.0720888}
-  - {x: -3.4984305, y: 1.8821671}
-  - {x: -3.6563995, y: 2.7201805}
-  - {x: -3.3395023, y: 3.7240038}
-  - {x: -2.8362968, y: 4.548011}
-  - {x: -2.2853863, y: 5.065062}
-  - {x: -1.5720466, y: 5.4904146}
-  - {x: -0.23359096, y: 5.950639}
-  - {x: 1.2513196, y: 6.0261283}
-  - {x: 2.3071513, y: 5.7706203}
-  - {x: 3.072831, y: 5.0920315}
-  - {x: 3.5274127, y: 4.2582183}
-  - {x: 3.640687, y: 3.5273442}
-  - {x: 3.4686456, y: 2.671343}
-  - {x: 3.2357614, y: 2.1391823}
-  - {x: 2.9231045, y: 1.6674815}
-  - {x: 3.3949728, y: -0.420009}
-  - {x: 3.5498955, y: -1.4854729}
-  - {x: 3.5565937, y: -2.7498672}
-  - {x: 3.2370427, y: -3.9760933}
-  - {x: 2.5122964, y: -5.015587}
-  - {x: 1.4176604, y: -5.7692413}
-  - {x: 0.062621005, y: -6.09837}
-  - {x: -1.0428679, y: -5.930757}
-  - {x: -1.9667622, y: -5.4350305}
-  - {x: -2.8905442, y: -4.488172}
-  - {x: -3.3882325, y: -3.3013148}
-  - {x: -3.628889, y: -1.9541053}
-  - {x: -3.4851348, y: -0.10037871}
-  - {x: -3.1852648, y: 1.0499005}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
+  m_Offset: {x: 0.022323132, y: 0.066969395}
+  m_Size: {x: 7.2746468, y: 12.195411}
+  m_Direction: 0

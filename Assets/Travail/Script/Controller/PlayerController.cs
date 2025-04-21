@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-     [Header("HEALTH")]
+    [Header("HEALTH")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private float invincibilityDuration = 1f;
     [SerializeField] private float respawnDelay = 2f;
@@ -104,12 +104,6 @@ public class PlayerController : MonoBehaviour
             _timeToStopStick -= Time.deltaTime;
         }
 
-        if (_isGrounded && !_hasJumpedSinceGrounded && _myRgbd2D.linearVelocity.y < -0.1f)
-        {
-            _currentJump++;
-            _hasJumpedSinceGrounded = true;
-        }
-
         if (_dashCooldownTimer > 0)
         {
             _dashCooldownTimer -= Time.deltaTime;
@@ -118,6 +112,8 @@ public class PlayerController : MonoBehaviour
         if (_isDashing)
         {
             _spriteRend.color = _dashColor;
+        } else {
+            UpdateColor(); 
         }
     }
 
@@ -125,7 +121,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_myRgbd2D.linearVelocity.y < 0)
         {
-            _myRgbd2D.linearVelocity += Vector2.up * Physics2D.gravity.y * (2.5f - 1) * Time.deltaTime;
+            _myRgbd2D.linearVelocity += Vector2.up * Physics2D.gravity.y * (2.5f - 1) * Time.deltaTime; //fixeddeltatime
         }
         else if (_myRgbd2D.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
@@ -175,11 +171,6 @@ public class PlayerController : MonoBehaviour
         if (_timeSinceLastWallJump > 0)
         {
             newSpeed *= 0.7f;
-        }
-
-        if (!_isDashing)
-        {
-            _myRgbd2D.linearVelocity = new Vector2(newSpeed, _myRgbd2D.linearVelocity.y);
         }
 
         if (!_isDashing)
@@ -251,6 +242,8 @@ public class PlayerController : MonoBehaviour
         if (_isWallSliding)
         {
             _myRgbd2D.linearVelocity = new Vector2(_myRgbd2D.linearVelocity.x, Mathf.Clamp(_myRgbd2D.linearVelocity.y, -_wallSlideSpeed, float.MaxValue));
+            _currentJump = 0; 
+            _currentWallJumps = 0; 
         }
     }
 
@@ -304,7 +297,6 @@ public class PlayerController : MonoBehaviour
             _currentWallJumps = 0;
             _hasJumpedSinceGrounded = false;
         }
-        
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -376,7 +368,7 @@ public class PlayerController : MonoBehaviour
         _dashTimer = _dashDuration;
         _dashDirection = direction;
         _dashCooldownTimer = _dashCooldown;
-        _spriteRend.color = _dashColor; 
+        _spriteRend.color = _dashColor;
 
         if (cameraController != null)
         {
@@ -387,18 +379,8 @@ public class PlayerController : MonoBehaviour
     void EndDash()
     {
         _isDashing = false;
-        
         _myRgbd2D.linearVelocity = _dashDirection * _dashSpeed * _dashEndMomentumMultiplier;
-
-        
-        if (_isSprinting)
-        {
-            _spriteRend.color = _sprintColor;
-        }
-        else
-        {
-            _spriteRend.color = _normalColor;
-        }
+        UpdateColor(); 
     }
 
     public void TakeDamage(int damage)
@@ -409,6 +391,7 @@ public class PlayerController : MonoBehaviour
         isInvincible = true;
         invincibilityTimer = invincibilityDuration;
         StartCoroutine(DamageFlashCoroutine());
+        StartCoroutine(InvincibilityCoroutine()); 
 
         if (currentHealth <= 0)
         {
@@ -419,14 +402,25 @@ public class PlayerController : MonoBehaviour
 
      private IEnumerator DamageFlashCoroutine()
     {
+        Color originalColor = _spriteRend.color;
         _spriteRend.color = damageColor;
         yield return new WaitForSeconds(damageFlashDuration);
 
-        if (!isDead && isInvincible)
+        if (!isDead) 
         {
-             UpdateColor(); 
+            UpdateColor();
         }
     }
+
+     private IEnumerator InvincibilityCoroutine()
+     {
+         yield return new WaitForSeconds(invincibilityDuration);
+         isInvincible = false;
+         if (!isDead)
+         {
+             UpdateColor(); 
+         }
+     }
 
     public int CurrentHealth
     {
@@ -440,20 +434,22 @@ public class PlayerController : MonoBehaviour
         set { respawnPoint = value; }
     }
 
-    void Die()
+    public void Die()
     {
         if (isDead) return;
 
         isDead = true;
         _myRgbd2D.linearVelocity = Vector2.zero;
-        _myRgbd2D.simulated = false; 
-        _collider.enabled = false; 
-        _isDashing = false; 
+        _myRgbd2D.simulated = false;
+        _collider.enabled = false;
+        _isDashing = false;
         _isJumping = false;
         _isWallJumping = false;
         _isWallSliding = false;
 
-        _spriteRend.color = deathColor; 
+        _spriteRend.color = deathColor;
+
+        StopAllCoroutines();
 
         Invoke(nameof(Respawn), respawnDelay);
     }
@@ -463,15 +459,18 @@ public class PlayerController : MonoBehaviour
         transform.position = respawnPoint;
         currentHealth = maxHealth;
         isDead = false;
-        isInvincible = false; 
+        isInvincible = false;
         invincibilityTimer = 0;
         _myRgbd2D.simulated = true;
-        _collider.enabled = true; 
+        _collider.enabled = true;
         _myRgbd2D.linearVelocity = Vector2.zero;
         _currentJump = 0;
         _currentWallJumps = 0;
-        _hasJumpedSinceGrounded = false; 
-        _spriteRend.color = _normalColor; 
+        _hasJumpedSinceGrounded = false;
+        _isGrounded = false;
+        _spriteRend.color = _normalColor;
         _dashCooldownTimer = 0;
+        transform.SetParent(null);
+        _myRgbd2D.position = respawnPoint;
     }
 }

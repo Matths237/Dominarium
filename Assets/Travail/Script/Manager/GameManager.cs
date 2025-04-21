@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         {
             coinsCollected += amount;
             OnCoinsChanged?.Invoke(coinsCollected);
+            Debug.Log("Tu as collecté " + coinsCollected + " pièces.");
         }
     }
 }

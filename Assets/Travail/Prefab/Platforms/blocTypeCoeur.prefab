@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 732490788189544976}
   - component: {fileID: 2263306437601703110}
   - component: {fileID: 5602692237047554845}
-  - component: {fileID: 1832620492310990175}
+  - component: {fileID: 7492133079259255763}
   m_Layer: 10
   m_Name: blocTypeCoeur
   m_TagString: Platform_basic
@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 1692837903195435032}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.37, y: 2.4, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -4.6708446, y: -0.24836993, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a59ca27b464a5f4458a5966b8c04e690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseSpeed: 4
+  baseSpeed: 12
 --- !u!212 &2263306437601703110
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -92,12 +92,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3131251507134765952, guid: d49f6dead696e464c909be62c8de31d9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d49f6dead696e464c909be62c8de31d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 34.22, y: 27.65337}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -130,7 +130,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!68 &1832620492310990175
+--- !u!68 &7492133079259255763
 EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,7 +140,7 @@ EdgeCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: a7d6bd3c4e7faef488b93752bf66216a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -167,27 +167,14 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: 5.0849624, y: -2.0897408}
-  - {x: 5.902104, y: -4.8725376}
-  - {x: 4.8434267, y: -6.4237065}
-  - {x: 1.6776373, y: -6.456973}
-  - {x: 0.9224361, y: -7.126025}
-  - {x: -1.9014387, y: -7.464346}
-  - {x: -2.8928254, y: -6.477087}
-  - {x: -5.1814585, y: -6.31978}
-  - {x: -5.942818, y: -2.3360324}
-  - {x: -4.5095844, y: 1.0768738}
-  - {x: -4.838831, y: 4.8258495}
-  - {x: -3.1076634, y: 6.965979}
-  - {x: -0.88465106, y: 7.059242}
-  - {x: 1.4159673, y: 6.253203}
-  - {x: 1.942572, y: 5.8897605}
-  - {x: 4.1146727, y: 6.2263308}
-  - {x: 5.613697, y: 4.591358}
-  - {x: 6.1463904, y: 2.1548183}
-  - {x: 5.871346, y: 1.0722677}
-  - {x: 5.260198, y: -1.4824208}
-  - {x: 5.0768948, y: -2.0890965}
+  - {x: 4.8615036, y: -3.958313}
+  - {x: -1.0867448, y: -4.4988785}
+  - {x: -6.2102976, y: -2.92571}
+  - {x: -4.4120064, y: 9.063963}
+  - {x: -0.5750176, y: 9.292997}
+  - {x: 1.1741562, y: 7.826274}
+  - {x: 5.58654, y: 7.7167907}
+  - {x: 5.0055923, y: -4.130413}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0

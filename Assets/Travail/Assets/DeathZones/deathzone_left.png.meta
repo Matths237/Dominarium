@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: d49f6dead696e464c909be62c8de31d9
+guid: d5cebec720716da438f267508c6ef7d3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3131251507134765952
-    second: PlatformCoeur_0
+      213: -1911821829286432552
+    second: deathzone_left_0
   - first:
-      213: -6594123880403884234
-    second: PlatformCoeur_1
+      213: -6489441212622197578
+    second: deathzone_left_1
   - first:
-      213: -7983814396111467088
-    second: PlatformCoeur_2
+      213: 8427831752771445571
+    second: deathzone_left_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -80,8 +80,8 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 2
+    textureFormat: -1
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -119,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlatformCoeur_0
+      name: deathzone_left_0
       rect:
         serializedVersion: 2
-        x: 1091
-        y: 857
-        width: 1212
-        height: 1470
+        x: 0
+        y: 0
+        width: 537
+        height: 2048
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,19 +134,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 08463d6285f8b84d0800000000000000
-      internalID: -3131251507134765952
+      spriteID: 8d07b8fec28d775e0800000000000000
+      internalID: -1911821829286432552
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlatformCoeur_1
+      name: deathzone_left_1
       rect:
         serializedVersion: 2
-        x: 2326
-        y: 1642
-        width: 12
+        x: 575
+        y: 664
+        width: 13
         height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -156,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6372b979447fc74a0800000000000000
-      internalID: -6594123880403884234
+      spriteID: 6bcafd2899fd0f5a0800000000000000
+      internalID: -6489441212622197578
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlatformCoeur_2
+      name: deathzone_left_2
       rect:
         serializedVersion: 2
-        x: 1086
-        y: 940
-        width: 11
-        height: 11
+        x: 517
+        y: 529
+        width: 30
+        height: 12
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0bd40275b1bc33190800000000000000
-      internalID: -7983814396111467088
+      spriteID: 34323ba935ca5f470800000000000000
+      internalID: 8427831752771445571
       vertices: []
       indices: 
       edges: []
@@ -198,9 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PlatformCoeur_0: -3131251507134765952
-      PlatformCoeur_1: -6594123880403884234
-      PlatformCoeur_2: -7983814396111467088
+      deathzone_left_0: -1911821829286432552
+      deathzone_left_1: -6489441212622197578
+      deathzone_left_2: 8427831752771445571
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
