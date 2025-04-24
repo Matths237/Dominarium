@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Bulle
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 4921976293810934633, guid: 24c8550ac4e4ade4eab2e6aeaa1dccb2, type: 3}
-  spawnProbability: 0.3
+  spawnProbability: 0
   fallSpeed: 6

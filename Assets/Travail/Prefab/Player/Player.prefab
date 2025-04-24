@@ -107,7 +107,7 @@ MonoBehaviour:
   respawnDelay: 2
   damageFlashDuration: 0.1
   currentHealth: 0
-  _speedMove: 12
+  _speedMove: 18
   _runSpeedMultiplier: 1.5
   _runKey: 109
   momentum: 200
@@ -123,7 +123,7 @@ MonoBehaviour:
   _maxWallJumpHorizontalForce: 6
   _minWallJumpVerticalForce: 4
   _maxWallJumpVerticalForce: 18
-  _wallSlideSpeed: 11
+  _wallSlideSpeed: 20
   _wallStickTime: 0
   _infiniteWallJumps: 1
   _maxWallJumps: 3

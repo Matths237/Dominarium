@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Coin
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 830084682477326487, guid: e2dbdc9af076a5a438d1aa24b6601849, type: 3}
-  spawnProbability: 0.1
+  spawnProbability: 0
   fallSpeed: 8

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 3084053971269402408, guid: 2f6e6a5e62f3a1d4bae6b3b2973aa18a, type: 3}
   spawnProbability: 1
-  fallSpeed: 6
+  fallSpeed: 10

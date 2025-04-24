@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Infectee
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 1195933016713285104, guid: ff7769bcdfdb3d74bb07a0516ea26f0b, type: 3}
-  spawnProbability: 0.5
-  fallSpeed: 6
+  spawnProbability: 0.2
+  fallSpeed: 10
