@@ -12,15 +12,10 @@ public class Spawner : MonoBehaviour
     public float screenWidthPercentage = 0.7f; 
     public float minHorizontalSpacing = 2f;
     public float spawnHeightOffset = 1.1f; 
-
     private float nextSpawnTime = 0f;
     private float screenWorldWidth; 
     private float lastSpawnX;
 
-    [Header("Pausing")]
-    [SerializeField] private bool isPaused = false;
-
-    [SerializeField] private float resumeTimeInternal; 
 
     void Start()
     {
@@ -41,16 +36,6 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
-        if (isPaused)
-        {
-            if (Time.time >= resumeTimeInternal)
-            {
-                Resume();
-            }
-            return; 
-        }
-
-        
         if (Time.time >= nextSpawnTime)
         {
             SpawnPlatform(); 
@@ -94,23 +79,5 @@ public class Spawner : MonoBehaviour
         }
 
         lastSpawnX = randomX;
-    }
-
-    public void PauseSpawning(float duration)
-    {
-        if (duration <= 0) return;
-
-        isPaused = true;
-        resumeTimeInternal = Time.time + duration;
-    }
-
-    public void Resume()
-    {
-        if (isPaused)
-        {
-            isPaused = false;
-
-            nextSpawnTime = Mathf.Max(nextSpawnTime, Time.time + (1f / spawnRate) * 0.1f); 
-        }
     }
 }
